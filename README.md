@@ -1,4 +1,4 @@
-# Full Stack FastAPI Template
+# Multi-Tenant Full Stack FastAPI Template
 
 <a href="https://github.com/zaynkorai/fastapi-template/actions?query=workflow%3A%22Test+Docker+Compose%22" target="_blank"><img src="https://github.com/zaynkorai/fastapi-template/workflows/Test%20Docker%20Compose/badge.svg" alt="Test Docker Compose"></a>
 <a href="https://github.com/zaynkorai/fastapi-template/actions?query=workflow%3A%22Test+Backend%22" target="_blank"><img src="https://github.com/zaynkorai/fastapi-template/workflows/Test%20Backend/badge.svg" alt="Test Backend"></a>

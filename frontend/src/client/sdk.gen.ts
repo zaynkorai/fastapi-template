@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, OnboardingCreateTeamOnboardingData, OnboardingCreateTeamOnboardingResponse, OnboardingJoinTeamOnboardingData, OnboardingJoinTeamOnboardingResponse, PrivateCreateUserData, PrivateCreateUserResponse, TeamsCreateTeamData, TeamsCreateTeamResponse, TeamsReadMyTeamsResponse, TeamsReadTeamData, TeamsReadTeamResponse, TeamsAddUserToTeamData, TeamsAddUserToTeamResponse, TeamsRemoveUserFromTeamData, TeamsRemoveUserFromTeamResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class ItemsService {
     /**
@@ -12,6 +12,7 @@ export class ItemsService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.xCurrentTeamId
      * @returns ItemsPublic Successful Response
      * @throws ApiError
      */
@@ -19,6 +20,9 @@ export class ItemsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/items/',
+            headers: {
+                'X-Current-Team-ID': data.xCurrentTeamId
+            },
             query: {
                 skip: data.skip,
                 limit: data.limit
@@ -34,6 +38,7 @@ export class ItemsService {
      * Create new item.
      * @param data The data for the request.
      * @param data.requestBody
+     * @param data.xCurrentTeamId
      * @returns ItemPublic Successful Response
      * @throws ApiError
      */
@@ -41,6 +46,9 @@ export class ItemsService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/items/',
+            headers: {
+                'X-Current-Team-ID': data.xCurrentTeamId
+            },
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
@@ -54,6 +62,7 @@ export class ItemsService {
      * Get item by ID.
      * @param data The data for the request.
      * @param data.id
+     * @param data.xCurrentTeamId
      * @returns ItemPublic Successful Response
      * @throws ApiError
      */
@@ -63,6 +72,9 @@ export class ItemsService {
             url: '/api/v1/items/{id}',
             path: {
                 id: data.id
+            },
+            headers: {
+                'X-Current-Team-ID': data.xCurrentTeamId
             },
             errors: {
                 422: 'Validation Error'
@@ -76,6 +88,7 @@ export class ItemsService {
      * @param data The data for the request.
      * @param data.id
      * @param data.requestBody
+     * @param data.xCurrentTeamId
      * @returns ItemPublic Successful Response
      * @throws ApiError
      */
@@ -85,6 +98,9 @@ export class ItemsService {
             url: '/api/v1/items/{id}',
             path: {
                 id: data.id
+            },
+            headers: {
+                'X-Current-Team-ID': data.xCurrentTeamId
             },
             body: data.requestBody,
             mediaType: 'application/json',
@@ -99,6 +115,7 @@ export class ItemsService {
      * Delete an item.
      * @param data The data for the request.
      * @param data.id
+     * @param data.xCurrentTeamId
      * @returns Message Successful Response
      * @throws ApiError
      */
@@ -108,6 +125,9 @@ export class ItemsService {
             url: '/api/v1/items/{id}',
             path: {
                 id: data.id
+            },
+            headers: {
+                'X-Current-Team-ID': data.xCurrentTeamId
             },
             errors: {
                 422: 'Validation Error'
@@ -213,6 +233,49 @@ export class LoginService {
     }
 }
 
+export class OnboardingService {
+    /**
+     * Create Team Onboarding
+     * Allows a user who is not yet part of any team to create their first team.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static createTeamOnboarding(data: OnboardingCreateTeamOnboardingData): CancelablePromise<OnboardingCreateTeamOnboardingResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/onboarding/create_team',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Join Team Onboarding
+     * Allows a user who is not yet part of any team to join an existing team.
+     * @param data The data for the request.
+     * @param data.teamId
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static joinTeamOnboarding(data: OnboardingJoinTeamOnboardingData): CancelablePromise<OnboardingJoinTeamOnboardingResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/onboarding/join_team',
+            query: {
+                team_id: data.teamId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
 export class PrivateService {
     /**
      * Create User
@@ -228,6 +291,110 @@ export class PrivateService {
             url: '/api/v1/private/users/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class TeamsService {
+    /**
+     * Create Team
+     * Create new team.
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static createTeam(data: TeamsCreateTeamData): CancelablePromise<TeamsCreateTeamResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/teams/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Read My Teams
+     * Retrieve teams the current user belongs to.
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMyTeams(): CancelablePromise<TeamsReadMyTeamsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/teams/me'
+        });
+    }
+    
+    /**
+     * Read Team
+     * Get team by ID.
+     * @param data The data for the request.
+     * @param data.teamId
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static readTeam(data: TeamsReadTeamData): CancelablePromise<TeamsReadTeamResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/teams/{team_id}',
+            path: {
+                team_id: data.teamId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Add User To Team
+     * Add a user to a team.
+     * Only superusers or existing team members can add users.
+     * @param data The data for the request.
+     * @param data.teamId
+     * @param data.userId
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static addUserToTeam(data: TeamsAddUserToTeamData): CancelablePromise<TeamsAddUserToTeamResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/teams/{team_id}/add_user/{user_id}',
+            path: {
+                team_id: data.teamId,
+                user_id: data.userId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Remove User From Team
+     * Remove a user from a team.
+     * Only superusers or existing team members can remove users.
+     * @param data The data for the request.
+     * @param data.teamId
+     * @param data.userId
+     * @returns TeamPublic Successful Response
+     * @throws ApiError
+     */
+    public static removeUserFromTeam(data: TeamsRemoveUserFromTeamData): CancelablePromise<TeamsRemoveUserFromTeamResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/teams/{team_id}/remove_user/{user_id}',
+            path: {
+                team_id: data.teamId,
+                user_id: data.userId
+            },
             errors: {
                 422: 'Validation Error'
             }

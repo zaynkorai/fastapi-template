@@ -1,7 +1,9 @@
 import uuid
+from datetime import datetime
 
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Column, DateTime
 
 
 # Shared properties
@@ -39,11 +41,18 @@ class UpdatePassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
+# Linking table for User and Team many-to-many relationship
+class UserTeamLink(SQLModel, table=True):
+    user_id: uuid.UUID = Field(foreign_key="user.id", primary_key=True)
+    team_id: uuid.UUID = Field(foreign_key="team.id", primary_key=True)
+
+
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
+    teams: list["Team"] = Relationship(back_populates="users", link_model=UserTeamLink)
 
 
 # Properties to return via API, id is always required
@@ -79,16 +88,59 @@ class Item(ItemBase, table=True):
         foreign_key="user.id", nullable=False, ondelete="CASCADE"
     )
     owner: User | None = Relationship(back_populates="items")
+    team_id: uuid.UUID = Field(foreign_key="team.id", nullable=False)
+    team: "Team" = Relationship(back_populates="items")
 
 
 # Properties to return via API, id is always required
 class ItemPublic(ItemBase):
     id: uuid.UUID
     owner_id: uuid.UUID
+    team_id: uuid.UUID
 
 
 class ItemsPublic(SQLModel):
     data: list[ItemPublic]
+    count: int
+
+
+class TeamBase(SQLModel):
+    name: str = Field(unique=True, index=True, max_length=255)
+    slug: str | None = Field(default=None, unique=True, index=True, max_length=255)
+    description: str | None = Field(default=None, max_length=1000)
+
+
+class TeamCreate(TeamBase):
+    pass
+
+
+class TeamUpdate(TeamBase):
+    name: str | None = Field(default=None, max_length=255)
+    slug: str | None = Field(default=None, unique=True, index=True, max_length=255)
+    description: str | None = Field(default=None, max_length=1000)
+
+
+class Team(TeamBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    owner_id: uuid.UUID | None = Field(foreign_key="user.id", nullable=True)
+
+    created_at: datetime = Field(
+        default_factory=datetime.now, sa_column=Column(DateTime(timezone=True), nullable=False)
+    )
+    updated_at: datetime | None = Field(
+        default_factory=datetime.now, sa_column=Column(DateTime(timezone=True), onupdate=datetime.now, nullable=True)
+    )
+
+    users: list["User"] = Relationship(back_populates="teams", link_model=UserTeamLink)
+    items: list["Item"] = Relationship(back_populates="team")
+
+
+class TeamPublic(TeamBase):
+    id: uuid.UUID
+
+
+class TeamsPublic(SQLModel):
+    data: list[TeamPublic]
     count: int
 
 
@@ -111,3 +163,4 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+

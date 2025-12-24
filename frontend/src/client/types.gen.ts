@@ -23,6 +23,7 @@ export type ItemPublic = {
     description?: (string | null);
     id: string;
     owner_id: string;
+    team_id: string;
 };
 
 export type ItemsPublic = {
@@ -49,6 +50,19 @@ export type PrivateUserCreate = {
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type TeamCreate = {
+    name: string;
+    slug?: (string | null);
+    description?: (string | null);
+};
+
+export type TeamPublic = {
+    name: string;
+    slug?: (string | null);
+    description?: (string | null);
+    id: string;
 };
 
 export type Token = {
@@ -110,18 +124,21 @@ export type ValidationError = {
 export type ItemsReadItemsData = {
     limit?: number;
     skip?: number;
+    xCurrentTeamId?: (string | null);
 };
 
 export type ItemsReadItemsResponse = (ItemsPublic);
 
 export type ItemsCreateItemData = {
     requestBody: ItemCreate;
+    xCurrentTeamId?: (string | null);
 };
 
 export type ItemsCreateItemResponse = (ItemPublic);
 
 export type ItemsReadItemData = {
     id: string;
+    xCurrentTeamId?: (string | null);
 };
 
 export type ItemsReadItemResponse = (ItemPublic);
@@ -129,12 +146,14 @@ export type ItemsReadItemResponse = (ItemPublic);
 export type ItemsUpdateItemData = {
     id: string;
     requestBody: ItemUpdate;
+    xCurrentTeamId?: (string | null);
 };
 
 export type ItemsUpdateItemResponse = (ItemPublic);
 
 export type ItemsDeleteItemData = {
     id: string;
+    xCurrentTeamId?: (string | null);
 };
 
 export type ItemsDeleteItemResponse = (Message);
@@ -165,11 +184,51 @@ export type LoginRecoverPasswordHtmlContentData = {
 
 export type LoginRecoverPasswordHtmlContentResponse = (string);
 
+export type OnboardingCreateTeamOnboardingData = {
+    requestBody: TeamCreate;
+};
+
+export type OnboardingCreateTeamOnboardingResponse = (TeamPublic);
+
+export type OnboardingJoinTeamOnboardingData = {
+    teamId: string;
+};
+
+export type OnboardingJoinTeamOnboardingResponse = (TeamPublic);
+
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type TeamsCreateTeamData = {
+    requestBody: TeamCreate;
+};
+
+export type TeamsCreateTeamResponse = (TeamPublic);
+
+export type TeamsReadMyTeamsResponse = (Array<TeamPublic>);
+
+export type TeamsReadTeamData = {
+    teamId: string;
+};
+
+export type TeamsReadTeamResponse = (TeamPublic);
+
+export type TeamsAddUserToTeamData = {
+    teamId: string;
+    userId: string;
+};
+
+export type TeamsAddUserToTeamResponse = (TeamPublic);
+
+export type TeamsRemoveUserFromTeamData = {
+    teamId: string;
+    userId: string;
+};
+
+export type TeamsRemoveUserFromTeamResponse = (TeamPublic);
 
 export type UsersReadUsersData = {
     limit?: number;
